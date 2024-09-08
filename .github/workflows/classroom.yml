@@ -1,0 +1,50 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: test1
+      id: test1
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test1
+        setup-command: pip install numpy nltk pandas scikit-learn
+        command: python -m unittest a3_1_test.TestBasic.test_q1
+        timeout: 10
+        max-score: 1
+    - name: test2
+      id: test2
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test2
+        setup-command: pip install numpy nltk scikit-learn pandas
+        command: python -m unittest a3_1_test.TestBasic.test_q2
+        timeout: 10
+        max-score: 1
+    - name: test3
+      id: test3
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test3
+        setup-command: pip install numpy nltk scikit-learn panda
+        command: python -m unittest a3_1_test.TestBasic.test_q3
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST1_RESULTS: "${{steps.test1.outputs.result}}"
+        TEST2_RESULTS: "${{steps.test2.outputs.result}}"
+        TEST3_RESULTS: "${{steps.test3.outputs.result}}"
+      with:
+        runners: test1,test2,test3
