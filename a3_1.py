@@ -140,7 +140,7 @@ def sim_tfidf(csv_file_path):
         input_tfidf = vectorizer.transform(input_texts)
         
         # Calculating cosine similarities using matrix multiplication
-        cosine_similarities = (input_tfidf[0] @ input_tfidf[1:].T).A[0]
+        cosine_similarities = (input_tfidf[0] @ input_tfidf[1:].T).toarray()[0]
         
         # Finding the index of the most similar sentence
         max_sim_index = np.argmax(cosine_similarities)
